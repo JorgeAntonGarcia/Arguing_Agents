@@ -24,16 +24,12 @@ private:
 	float social_value;
 
 public:
-	listener() {};
-	~listener() {};
+	listener();
+	~listener();
 
 	// FUNCTION OF ACCEPTANCE OF NEW ARGUMENTS, RETURNING A BOOLEAN (TRUE = ACCEPTED, FALSE = REJECTED)
-	bool Add_argument(argument Arg) { 
-		bool accepted = false;
-		// CREATE THE FUNCTION OF CHECKING THE ARGUMENT
-		return accepted; 
-	}
+	bool Add_argument(argument);
 
-}
+};
 
 #endif
