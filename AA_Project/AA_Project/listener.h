@@ -18,7 +18,7 @@ private:
 	float economic_acep;
 	float ecologic_acep;
 	float social_acep;
-	// GRADE OF GRADDING THE DIFFERENT SUBJECTS
+	// GRADE OF GRADING THE DIFFERENT SUBJECTS
 	float economic_value;
 	float ecologic_value;
 	float social_value;
