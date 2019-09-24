@@ -41,7 +41,7 @@ bool listener::Add_argument(argument Arg) {
 bool listener::Evaluate_argument(argument Arg, float acceptance_rate) {
 	bool accepted = false;
 
-	acceptance_rate += ((acceptance_rate + Arg.Get_validity / 100) > 1) ? 1 : (Arg.Get_validity / 100); // acceptance_rate caps at 100%
+	acceptance_rate *= ((acceptance_rate * (1 + Arg.Get_validity() / 100)) > 1) ? 1 : (1+ (Arg.Get_validity() / 100)); // acceptance_rate caps at 100%
 	
 	accepted = (acceptance_rate >= get_random()) ? true : false;
 	return accepted;
