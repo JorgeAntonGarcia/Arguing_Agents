@@ -29,11 +29,11 @@ private:
 	float get_random();
 
 public:
-	listener() {  
+	/*listener() {  
 		economic_opinion = 0.0f; ecologic_opinion = 0.0f; social_opinion = 0.0f; 
 		economic_accep = 50.0f; ecologic_accep = 50.0f; social_accep = 50.0f;
 		economic_value = 1.0f; ecologic_value = 1.0f; social_value = 1.0f;
-	};
+	}*/
 	listener(float ECONOMIC_OP = 0.0f, float ECOLOGIC_OP = 0.0f, float SOCIAL_OP = 0.0f, 
 		float ECONOMIC_AC = 50.0f, float ECOLOGIC_AC = 50.0f, float SOCIAL_AC = 50.0f,
 		float ECONOMIC_VAL = 1.0f, float ECOLOGIC_VAL = 1.0f, float SOCIAL_VAL = 1.0f) {
