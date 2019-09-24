@@ -3,12 +3,12 @@
 
 #include "listener.h"
 
-listener::listener() {}
+
 listener::~listener() {}
 
 float listener::get_random() { // Returns a random float in given range
-	static std::default_random_engine e;
-	static std::uniform_real_distribution<> dis(0, 1); // range [0,1]
+	static std::random_device e;
+	static std::uniform_real_distribution<> dis(0, 100); // range [0,100]
 	return dis(e);
 
 	// Source: https://stackoverflow.com/questions/686353/random-float-number-generation
@@ -18,7 +18,7 @@ bool listener::Add_argument(argument Arg) {
 	bool accepted = false;
 	float acceptance_rate = 0;
 	// CREATE THE FUNCTION OF CHECKING THE ARGUMENT
-	switch (Arg.Get_nature) {
+	switch (Arg.Get_nature()) {
 		case ECONOMIC:
 			acceptance_rate = this->economic_accep;
 			break;
@@ -40,10 +40,13 @@ bool listener::Add_argument(argument Arg) {
 
 bool listener::Evaluate_argument(argument Arg, float acceptance_rate) {
 	bool accepted = false;
+	float adjusted_validity = (Arg.Get_validity() - 50) / 100;
+	float random = get_random();
 
-	acceptance_rate *= ((acceptance_rate * (1 + Arg.Get_validity() / 100)) > 1) ? 1 : (1+ (Arg.Get_validity() / 100)); // acceptance_rate caps at 100%
+	acceptance_rate = (acceptance_rate * (1 + adjusted_validity) > 100) ? 100 : (acceptance_rate * (1+ adjusted_validity)); // acceptance_rate caps at 100%
 	
-	accepted = (acceptance_rate >= get_random()) ? true : false;
+	accepted = (acceptance_rate >= random) ? true : false;
+
 	return accepted;
 }
 
