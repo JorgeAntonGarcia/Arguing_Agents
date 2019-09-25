@@ -3,8 +3,26 @@
 
 #include "listener.h"
 
+listener::listener(int type) {
+	switch (type) {
+	case 1:
+		economic_opinion = 50.0f; ecologic_opinion = 50.0f; social_opinion = 50.0f;
+		economic_value = 1.2f; ecologic_value = 0.6f; social_value = 0.9f; break;
+	case 2:
+		economic_opinion = 50.0f; ecologic_opinion = 50.0f; social_opinion = 50.0f;
+		economic_value = 0.6f; ecologic_value = 1.2f; social_value = 0.9f; break;
+	case 3:
+		economic_opinion = 50.0f; ecologic_opinion = 50.0f; social_opinion = 50.0f;
+		economic_value = 1.0f; ecologic_value = 1.0f; social_value = 1.2f; break;
+	default:
+		economic_opinion = 50.0f; ecologic_opinion = 50.0f; social_opinion = 50.0f;
+		economic_value = 1.0f; ecologic_value = 1.0f; social_value = 1.0f; break;
+	}
+}
 
-listener::~listener() {}
+listener::~listener() {
+
+}
 
 float listener::get_random() { // Returns a random float in given range
 	static std::random_device e;
@@ -16,25 +34,30 @@ float listener::get_random() { // Returns a random float in given range
 
 bool listener::Add_argument(argument Arg) {
 	bool accepted = false;
-	float acceptance_rate = 0;
+	float * acceptance_rate = NULL;
 	// CREATE THE FUNCTION OF CHECKING THE ARGUMENT
 	switch (Arg.Get_nature()) {
 		case ECONOMIC:
-			acceptance_rate = this->economic_accep;
+			acceptance_rate = &(this->economic_opinion);
 			break;
 		case ECOLOGIC:
-			acceptance_rate = this->ecologic_accep;
+			acceptance_rate = &(this->ecologic_opinion);
 			break;
 		case SOCIAL:
-			acceptance_rate = this->social_accep;
+			acceptance_rate = &(this->social_opinion);
 			break;
 		default:
 			perror("Critical Error - Listener.cpp: Nature not in switch");
 			exit(1);
 			break;
 	}
-	accepted = this->Evaluate_argument(Arg, acceptance_rate);
 
+	//  If you give a Pro you don't need to apply any transformation, but giving a Con makes neccesary to invert the acceptance rate
+	if  (Arg.Get_pro() == true)	{ accepted = this->Evaluate_argument(Arg, *acceptance_rate); }
+	else						{ accepted = this->Evaluate_argument(Arg, 100 - *acceptance_rate); }
+
+	this->Update_opinion(Arg, accepted, acceptance_rate);
+	
 	return accepted;
 }
 
@@ -48,6 +71,25 @@ bool listener::Evaluate_argument(argument Arg, float acceptance_rate) {
 	accepted = (acceptance_rate >= random) ? true : false;
 
 	return accepted;
+}
+
+void listener::Update_opinion(argument Arg, bool accepted, float * parameter) {
+	float GAUSS_MAXIMUM = 4.0f;
+	float GAUSS_SHAPE = 10.0f;
+
+		if (accepted == true) {
+			this->accepted_arguments.push_back(Arg);
+			// Gaussian function to model the oppinion change
+			float math = expf(-(powf((*parameter - 50.0f), 2.0) / (2 * powf(GAUSS_SHAPE, 2.0))));
+			if (Arg.Get_pro() == true) { *parameter += GAUSS_MAXIMUM * math;}
+			else { *parameter -= GAUSS_MAXIMUM * math; }
+		}
+
+		else {
+			this->rejected_arguments.push_back(Arg);
+			// To think about it
+		}
+
 }
 
 #endif
