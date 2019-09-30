@@ -25,6 +25,7 @@ private:
 	bool Evaluate_argument(argument, float);
 	void Update_opinion(argument, bool, float *);
 	float get_random();
+	bool Check_KB(int);
 
 public:
 	listener() {  

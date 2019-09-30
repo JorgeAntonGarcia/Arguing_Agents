@@ -9,7 +9,7 @@ private:
 	int ID;
 	int nature; 
 	bool is_pro; // PRO = TRUE, CON = FALSE
-	float strength; // THE STRENGHT OF THE ARGUMENT IN THE FIELD
+	float strength; // THE STRENGTH OF THE ARGUMENT IN THE FIELD
 	float validity;// HOW MUCH AN ARGUMENT IS CONSISTENT
 
 public:
@@ -19,6 +19,7 @@ public:
 	~argument() {}
 
 	//SET AND GET FUNCTIONS
+	int Get_ID() { return ID; }
 	void Set_nature(int NAT) { nature = NAT; }			int Get_nature() { return nature; }
 	void Set_strength(float STR) { strength = STR; }	float Get_strength() { return strength; }
 	void Set_validity(float VAL) { validity = VAL; }	float Get_validity() { return validity; }

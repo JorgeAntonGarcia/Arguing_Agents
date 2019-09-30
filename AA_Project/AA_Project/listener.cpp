@@ -35,7 +35,11 @@ float listener::get_random() { // Returns a random float in given range
 bool listener::Add_argument(argument Arg) {
 	bool accepted = false;
 	float * acceptance_rate = NULL;
-	// CREATE THE FUNCTION OF CHECKING THE ARGUMENT
+	// Check whether the listener has heard the argument before
+	if (Check_KB(Arg.Get_ID())) {
+		return accepted;
+	}
+	// Use nature to get the proper opinion score
 	switch (Arg.Get_nature()) {
 		case ECONOMIC:
 			acceptance_rate = &(this->economic_opinion);
@@ -79,7 +83,7 @@ void listener::Update_opinion(argument Arg, bool accepted, float * parameter) {
 
 		if (accepted == true) {
 			this->accepted_arguments.push_back(Arg);
-			// Gaussian function to model the oppinion change
+			// Gaussian function to model the opinion change
 			float math = expf(-(powf((*parameter - 50.0f), 2.0) / (2 * powf(GAUSS_SHAPE, 2.0))));
 			if (Arg.Get_pro() == true) { *parameter += GAUSS_MAXIMUM * math;}
 			else { *parameter -= GAUSS_MAXIMUM * math; }
@@ -90,6 +94,30 @@ void listener::Update_opinion(argument Arg, bool accepted, float * parameter) {
 			// To think about it
 		}
 
+}
+
+bool listener::Check_KB(int ID) {
+	//Returns whether the listener has seen the argument before
+	bool is_known = false;
+	//Check accepted arguments
+	for (auto i : accepted_arguments) {
+		if (ID == i.Get_ID()) {
+			is_known = true;
+			break;
+		}
+	}
+	//If the argument hasn't been encountered in the accepted arguments:
+	if (!is_known) {
+		// Check the rejected_arguments
+		for (auto i : rejected_arguments) {
+			if (ID == i.Get_ID()) {
+				is_known = true;
+				break;
+			}
+		}
+	}
+
+	return is_known;
 }
 
 #endif
