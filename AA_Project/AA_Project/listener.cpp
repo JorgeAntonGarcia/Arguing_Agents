@@ -120,4 +120,10 @@ bool listener::Check_KB(int ID) {
 	return is_known;
 }
 
+float listener::Get_verdict() {
+	float sum_of_values = Get_economic_value() + Get_ecologic_value() + Get_social_value();
+	float verdict = (Get_economic_op() * Get_economic_value() + Get_ecologic_op() * Get_ecologic_value() + Get_social_op() * Get_social_value()) / sum_of_values;
+	return verdict;
+}
+
 #endif
