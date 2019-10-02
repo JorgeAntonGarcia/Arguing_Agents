@@ -56,7 +56,7 @@ bool listener::Add_argument(argument Arg) {
 			break;
 	}
 
-	//  If you give a Pro you don't need to apply any transformation, but giving a Con makes neccesary to invert the acceptance rate
+	//  If you give a Pro you don't need to apply any transformation, but giving a Con makes it neccesary to invert the acceptance rate
 	if  (Arg.Get_pro() == true)	{ accepted = this->Evaluate_argument(Arg, *acceptance_rate); }
 	else						{ accepted = this->Evaluate_argument(Arg, 100 - *acceptance_rate); }
 
@@ -84,7 +84,7 @@ void listener::Update_opinion(argument Arg, bool accepted, float * parameter) {
 		if (accepted == true) {
 			this->accepted_arguments.push_back(Arg);
 			// Gaussian function to model the opinion change
-			float math = expf(-(powf((Arg.Get_strength() - 50.0f), 2.0) / (2 * powf(GAUSS_SHAPE, 2.0))));
+			float math = expf(- (powf((Arg.Get_strength() - 50.0f), 2.0) / (2 * powf(GAUSS_SHAPE, 2.0))));
 			if (Arg.Get_pro() == true) { *parameter += GAUSS_MAXIMUM * math;} // PRO arguments.
 			else { *parameter -= GAUSS_MAXIMUM * math; }	//CON arguments.
 		}
