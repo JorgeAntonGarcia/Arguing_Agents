@@ -51,6 +51,7 @@ public:
 	float Get_social_value() { return social_value; }
 
 	float Get_verdict();
+	string Evaluate_verdict();
 	
 };
 

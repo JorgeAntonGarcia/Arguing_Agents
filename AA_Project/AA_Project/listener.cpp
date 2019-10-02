@@ -126,4 +126,17 @@ float listener::Get_verdict() {
 	return verdict;
 }
 
+string listener::Evaluate_verdict() {
+	float verdict = Get_verdict();
+	if (verdict > 50) {
+		return "PRO";
+	}
+	else if (verdict < 50) {
+		return "CON";
+	}
+	else {
+		return "NEUTRAL";
+	}
+}
+
 #endif
