@@ -85,8 +85,8 @@ void listener::Update_opinion(argument Arg, bool accepted, float * parameter) {
 			this->accepted_arguments.push_back(Arg);
 			// Gaussian function to model the opinion change
 			float math = expf(-(powf((*parameter - 50.0f), 2.0) / (2 * powf(GAUSS_SHAPE, 2.0))));
-			if (Arg.Get_pro() == true) { *parameter += GAUSS_MAXIMUM * math;}
-			else { *parameter -= GAUSS_MAXIMUM * math; }
+			if (Arg.Get_pro() == true) { *parameter += GAUSS_MAXIMUM * math;} // PRO arguments.
+			else { *parameter -= GAUSS_MAXIMUM * math; }	//CON arguments.
 		}
 
 		else {
