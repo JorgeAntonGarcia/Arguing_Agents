@@ -44,6 +44,14 @@ public:
 	bool Add_argument(argument);
 	void Add_set_arguments(list<argument>);
 	float Get_economic_op() { return economic_opinion; }
+	float Get_ecologic_op() { return ecologic_opinion; }
+	float Get_social_op() { return social_opinion; }
+	float Get_economic_value() { return economic_value; }
+	float Get_ecologic_value() { return ecologic_value; }
+	float Get_social_value() { return social_value; }
+
+	float Get_verdict();
+	string Evaluate_verdict();
 	
 };
 

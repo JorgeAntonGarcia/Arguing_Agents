@@ -85,8 +85,8 @@ void listener::Update_opinion(argument Arg, bool accepted, float * parameter) {
 			this->accepted_arguments.push_back(Arg);
 			// Gaussian function to model the opinion change
 			float math = expf(-(powf((*parameter - 50.0f), 2.0) / (2 * powf(GAUSS_SHAPE, 2.0))));
-			if (Arg.Get_pro() == true) { *parameter += GAUSS_MAXIMUM * math;}
-			else { *parameter -= GAUSS_MAXIMUM * math; }
+			if (Arg.Get_pro() == true) { *parameter += GAUSS_MAXIMUM * math;} // PRO arguments.
+			else { *parameter -= GAUSS_MAXIMUM * math; }	//CON arguments.
 		}
 
 		else {
@@ -124,6 +124,23 @@ void listener::Add_set_arguments(list<argument> data_set) {
 	std::list<argument>::iterator it;
 	for (it = data_set.begin(); it != data_set.end(); it++) {
 		this->Add_argument(*it);
+
+float listener::Get_verdict() {
+	float sum_of_values = Get_economic_value() + Get_ecologic_value() + Get_social_value();
+	float verdict = (Get_economic_op() * Get_economic_value() + Get_ecologic_op() * Get_ecologic_value() + Get_social_op() * Get_social_value()) / sum_of_values;
+	return verdict;
+}
+
+string listener::Evaluate_verdict() {
+	float verdict = Get_verdict();
+	if (verdict > 50) {
+		return "PRO";
+	}
+	else if (verdict < 50) {
+		return "CON";
+	}
+	else {
+		return "NEUTRAL";
 	}
 }
 
