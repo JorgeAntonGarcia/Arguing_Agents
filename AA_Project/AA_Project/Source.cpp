@@ -8,7 +8,7 @@
 void main() {
 	listener Listeners_list[NUM_LISTENERS] = { (1),(1),(1),(2),(2),(2),(3),(3),(3) };
 	list <argument> Background_1, Background_2, Background_3, Arguments_given;
-	float before_scores[NUM_LISTENERS], after_scores[NUM_LISTENERS];
+	float initial_scores[NUM_LISTENERS], before_scores[NUM_LISTENERS], after_scores[NUM_LISTENERS];
 	argument* arg;
 
 	// Setting up the 1st background (focused on Economic values)
@@ -80,10 +80,19 @@ void main() {
 	arg->set_argument(62, ECOLOGIC, false, 67.4f, 69.3f); Background_3.push_back(*arg);
 	arg->set_argument(63, ECOLOGIC, false, 52.8f, 91.0f); Background_3.push_back(*arg);
 
+	for (int i = 0; i < NUM_LISTENERS; i++) { initial_scores[i] = Listeners_list[i].Get_verdict(); }
+
 	for (int i = 0; i < NUM_LISTENERS; i++) {
 		if (i % 3 == 0) { Listeners_list[i].Add_set_arguments(Background_1); }
 		else if(i%3 == 1){ Listeners_list[i].Add_set_arguments(Background_2); }
 		else{ Listeners_list[i].Add_set_arguments(Background_3); }
+	}
+
+	for (int i = 0; i < NUM_LISTENERS; i++) { before_scores[i] = Listeners_list[i].Get_verdict();}
+
+	for (int i = 0; i < NUM_LISTENERS; i++) {
+		printf("\nListener %d\n",i+1);
+		printf("Initial score: %f  After Background: %f\n", initial_scores[i], before_scores[i]);
 	}
 
 	system("pause");
