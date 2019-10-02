@@ -42,7 +42,7 @@ public:
 
 	// FUNCTION OF ACCEPTANCE OF NEW ARGUMENTS, RETURNS A BOOLEAN (TRUE = ACCEPTED, FALSE = REJECTED)
 	bool Add_argument(argument);
-
+	void Add_set_arguments(list<argument>);
 	float Get_economic_op() { return economic_opinion; }
 	
 };

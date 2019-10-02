@@ -120,4 +120,11 @@ bool listener::Check_KB(int ID) {
 	return is_known;
 }
 
+void listener::Add_set_arguments(list<argument> data_set) {
+	std::list<argument>::iterator it;
+	for (it = data_set.begin(); it != data_set.end(); it++) {
+		this->Add_argument(*it);
+	}
+}
+
 #endif
