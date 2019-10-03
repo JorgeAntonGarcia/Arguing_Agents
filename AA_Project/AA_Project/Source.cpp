@@ -4,7 +4,6 @@
 
 #define NUM_LISTENERS 9
 
-
 int main() {
 	listener Listeners_list[NUM_LISTENERS] = { (1),(1),(1),(2),(2),(2),(3),(3),(3) };
 	list <argument> Background_1, Background_2, Background_3, Arguments_given;
@@ -3924,7 +3923,7 @@ int main() {
 
 
 	for (int i = 0; i < NUM_LISTENERS; i++) { initial_scores[i] = Listeners_list[i].Get_verdict(); printf("Listener %d  :  ", i + 1);
-	printf("Initial score: %f\n", initial_scores[i]);
+	printf("Initial score: %.2f\n", initial_scores[i]);
 	}
 
 	for (int i = 0; i < NUM_LISTENERS; i++) {
@@ -3935,14 +3934,14 @@ int main() {
 
 	printf("\n\n");
 	for (int i = 0; i < NUM_LISTENERS; i++) { before_scores[i] = Listeners_list[i].Get_verdict();
-	printf("Listener %d  :  After background score: %f     Arguments accepted: %d  Arguments rejected: %d\n", i+1, before_scores[i], Listeners_list[i].Get_arguments_accepted(), Listeners_list[i].Get_arguments_rejected());
+	printf("Listener %d  :  After background score: %.2f     Arguments accepted: %d  Arguments rejected: %d\n", i + 1, before_scores[i], Listeners_list[i].Get_arguments_accepted(), Listeners_list[i].Get_arguments_rejected());
 	}
 
 	for (int i = 0; i < NUM_LISTENERS; i++) { Listeners_list[i].Add_set_arguments(Arguments_given); }
 
 	printf("\n\n");
 	for (int i = 0; i < NUM_LISTENERS; i++) { after_scores[i] = Listeners_list[i].Get_verdict(); 
-	printf("Listener %d  :  Final score: %f     Arguments accepted: %d  Arguments rejected: %d\n", i+1, after_scores[i], Listeners_list[i].Get_arguments_accepted(), Listeners_list[i].Get_arguments_rejected());
+	printf("Listener %d  :  Final score: %.2f     Arguments accepted: %d  Arguments rejected: %d\n", i+1, after_scores[i], Listeners_list[i].Get_arguments_accepted(), Listeners_list[i].Get_arguments_rejected());
 	}
 
 	system("pause");

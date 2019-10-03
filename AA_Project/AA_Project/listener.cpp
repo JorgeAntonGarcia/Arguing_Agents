@@ -95,9 +95,6 @@ void listener::Update_opinion(argument Arg, bool accepted, float * parameter) {
 				if ((*parameter -= GAUSS_MAXIMUM * math) > 0.0) {}
 				else { *parameter = 0.0; }
 			; }	//CON arguments.
-			float math = expf(- (powf((Arg.Get_strength() - 50.0f), 2.0) / (2 * powf(GAUSS_SHAPE, 2.0))));
-			if (Arg.Get_pro() == true) { *parameter += GAUSS_MAXIMUM * math;} // PRO arguments.
-			else { *parameter -= GAUSS_MAXIMUM * math; }	//CON arguments.
 		}
 
 		else {
@@ -147,9 +144,11 @@ float listener::Get_verdict() {
 
 string listener::Evaluate_verdict() {
 	float verdict = Get_verdict();
-	if (verdict > 50) {	return "PRO";}
-	else if (verdict < 50) { return "CON";}
-	else {	return "NEUTRAL";}
+	std::string result;
+	if (verdict > 60.0f) { result = "PRO"; }
+	else if (verdict < 40.0f ) { result = "CON";}
+	else {	result = "NEUTRAL";}
+	return result;
 }
 
 #endif
