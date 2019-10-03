@@ -5,7 +5,7 @@
 #define NUM_LISTENERS 9
 
 
-void main() {
+int main() {
 	listener Listeners_list[NUM_LISTENERS] = { (1),(1),(1),(2),(2),(2),(3),(3),(3) };
 	list <argument> Background_1, Background_2, Background_3, Arguments_given;
 	float initial_scores[NUM_LISTENERS], before_scores[NUM_LISTENERS], after_scores[NUM_LISTENERS];
