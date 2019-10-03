@@ -13,6 +13,8 @@ private:
 	// ARGUMENTS THAT A LISTENER HAS
 	list <argument> accepted_arguments;
 	list <argument> rejected_arguments;
+	int number_arg_accepted;
+	int number_arg_rejected;
 	// OPINION THE LISTENER HAS RELATED TO EACH TOPIC
 	float economic_opinion;
 	float ecologic_opinion;
@@ -30,12 +32,13 @@ private:
 public:
 	listener() {  
 		economic_opinion = 50.0f; ecologic_opinion = 50.0f; social_opinion = 50.0f; 
-		economic_value = 1.0f; ecologic_value = 1.0f; social_value = 1.0f;
+		economic_value = 1.0f; ecologic_value = 1.0f; social_value = 1.0f; number_arg_accepted = 0; number_arg_rejected = 0;
 	}
 	listener(float ECONOMIC_OP, float ECOLOGIC_OP, float SOCIAL_OP, 
 		float ECONOMIC_VAL = 1.0f, float ECOLOGIC_VAL = 1.0f, float SOCIAL_VAL = 1.0f) {
 		economic_opinion = ECONOMIC_OP; ecologic_opinion = ECOLOGIC_OP; social_opinion = SOCIAL_OP;
 		economic_value = ECONOMIC_VAL; ecologic_value = ECOLOGIC_VAL; social_value = SOCIAL_VAL;
+		number_arg_accepted = 0; number_arg_rejected = 0;
 	}
 	listener(int);
 	~listener();
@@ -52,6 +55,9 @@ public:
 
 	float Get_verdict();
 	string Evaluate_verdict();
+
+	int Get_arguments_accepted() { return number_arg_accepted; }
+	int Get_arguments_rejected() { return number_arg_rejected; }
 	
 };
 

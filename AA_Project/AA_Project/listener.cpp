@@ -4,6 +4,7 @@
 #include "listener.h"
 
 listener::listener(int type) {
+	number_arg_accepted = 0; number_arg_rejected = 0;
 	switch (type) {
 	case 1:
 		economic_opinion = 50.0f; ecologic_opinion = 50.0f; social_opinion = 50.0f;
@@ -83,14 +84,22 @@ void listener::Update_opinion(argument Arg, bool accepted, float * parameter) {
 
 		if (accepted == true) {
 			this->accepted_arguments.push_back(Arg);
+			this->number_arg_accepted++;
 			// Gaussian function to model the opinion change
 			float math = expf(-(powf((Arg.Get_strength() - 50.0f), 2.0) / (2 * powf(GAUSS_SHAPE, 2.0))));
-			if (Arg.Get_pro() == true) { *parameter += GAUSS_MAXIMUM * math;} // PRO arguments.
-			else { *parameter -= GAUSS_MAXIMUM * math; }	//CON arguments.
+			if (Arg.Get_pro() == true) {
+				if ((*parameter += GAUSS_MAXIMUM * math) < 100.0) {}
+				else { *parameter = 100.0; }
+			} // PRO arguments.
+			else { 
+				if ((*parameter -= GAUSS_MAXIMUM * math) > 0.0) {}
+				else { *parameter = 0.0; }
+			; }	//CON arguments.
 		}
 
 		else {
 			this->rejected_arguments.push_back(Arg);
+			this->number_arg_rejected++;
 			// To think about it
 		}
 
