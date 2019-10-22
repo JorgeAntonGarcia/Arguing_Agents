@@ -71,32 +71,34 @@ void listener::Update_opinion(argument Arg, bool accepted, float * expertise, fl
 			this->accepted_arguments.push_back(Arg);
 			this->number_arg_accepted++;
 
+			// == EXPERTISE CHANGE ==
 			// Gaussian function to model the grade of expertise of the subject depending on the strenght of the argument accepted
-			float math_expertise = expf(-(powf((100.0f - Arg.Get_involvement() + *expertise), 2.0) / (2 * powf(GAUSS_SHAPE, 2.0))));
-			float learning_potential = (100.0 - *expertise) / 100.0; // Grade of expertise influences the amount of change in expertise.
+			float math_expertise = expf(-(powf((Arg.Get_INVOLVEMENT_MAX()) - Arg.Get_involvement() + *expertise), 2.0) / (2 * powf(GAUSS_SHAPE, 2.0))));
+			float learning_potential = (Arg.Get_INVOLVEMENT_MAX() - *expertise) / Arg.Get_INVOLVEMENT_MAX(); // Grade of expertise influences the amount of change in expertise.
 			if (Arg.Get_pro() == is_pro) {
-				if ((*expertise += GAUSS_MAXIMUM * math_expertise * learning_potential ) < 100.0) {}
-				else { *expertise = 100.0; }
+				if ((*expertise += GAUSS_MAXIMUM * math_expertise * learning_potential ) < Arg.Get_INVOLVEMENT_MAX()) {}
+				else { *expertise = Arg.Get_INVOLVEMENT_MAX(); }
 			} // Arguments aligned with the subject position
 			else { 
-				if ((*expertise -= GAUSS_MAXIMUM * math_expertise * learning_potential) > 0.0) {}
+				if ((*expertise -= GAUSS_MAXIMUM * math_expertise * learning_potential) > Arg.Get_INVOLVEMENT_MIN()) {}
 				else { *expertise = -(*expertise - GAUSS_MAXIMUM * math_expertise * learning_potential); is_pro = !is_pro; }
-			}	// Arguments that face the subject knowdledge
+			}	// Arguments that face the subject knowledge
 
-			// Gaussian function to model the emotional state of the subject depending on the strenght of the argument accepted
+			// == EMOTIONAL CHANGE ==
+			// Gaussian function to model the emotional state of the subject depending on the strength of the argument accepted
 			float math_emotion = 0.0f;
 
 			if (Arg.Get_AR_ratio() < emotional_state) {
 				math_emotion = expf(-(powf((emotional_state - Arg.Get_AR_ratio()), 2.0) / (2 * powf(GAUSS_SHAPE, 2.0))));
 				math_emotion = 1 - math_emotion;
-				if ((*emotion -= GAUSS_MAXIMUM * math_emotion) > 0.0) {}
-				else { *emotion = 0.0; }
+				if ((*emotion -= GAUSS_MAXIMUM * math_emotion) > Arg.Get_AR_RATIO_MIN()) {}
+				else { *emotion = Arg.Get_AR_RATIO_MIN(); }
 			} // Arguments more emotional than the state of the subject
 			else {
 				math_emotion = expf(-(powf((Arg.Get_AR_ratio() - emotional_state), 2.0) / (2 * powf(GAUSS_SHAPE, 2.0))));
 				math_emotion = 1 - math_emotion;
-				if ((*emotion += GAUSS_MAXIMUM * math_emotion) > 100.0) {}
-				else { *emotion = 100.0; }
+				if ((*emotion += GAUSS_MAXIMUM * math_emotion) < Arg.Get_AR_RATIO_MAX()) {}
+				else { *emotion = Arg.Get_AR_RATIO_MAX(); }
 			}	// Arguments with more reason than the subject
 		}
 
