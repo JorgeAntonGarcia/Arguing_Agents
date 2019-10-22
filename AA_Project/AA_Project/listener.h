@@ -17,8 +17,8 @@ private:
 	int number_arg_rejected;
 
 	// VARIABLES THAT CONFORM THE SUBJECT POSITION
-	float grade_of_expertise;
-	float emotional_state;
+	float grade_of_expertise; // Reflects sensitivity to involvement
+	float emotional_state; // Reflects sensitivity to AR_ratios
 
 	// POSITION OF THE SUBJECT RELATED TO THE TOPIC
 	bool is_pro;
