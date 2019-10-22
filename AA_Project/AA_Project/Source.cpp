@@ -7,6 +7,7 @@
 #define NUM_LISTENERS 9
 
 int main() {
+
 	listener Listeners_list[NUM_LISTENERS] = { (1), (1), (1), (2), (2), (2), (3), (3), (3) };
 	list<argument> argument_list;
 	float expertise_initial[NUM_LISTENERS], expertise_final[NUM_LISTENERS], emotion_initial[NUM_LISTENERS], emotion_final[NUM_LISTENERS];
@@ -69,5 +70,6 @@ int main() {
 	myfile.close();*/
 
 	system("pause");
+
 }
 
