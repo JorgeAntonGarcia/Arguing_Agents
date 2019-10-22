@@ -15,29 +15,26 @@ private:
 	list <argument> rejected_arguments;
 	int number_arg_accepted;
 	int number_arg_rejected;
-	// OPINION THE LISTENER HAS RELATED TO EACH TOPIC
-	float economic_opinion;
-	float ecologic_opinion;
-	float social_opinion;
-	// GRADE OF GRADING THE DIFFERENT SUBJECTS
-	float economic_value;
-	float ecologic_value;
-	float social_value;
+
+	// VARIABLES THAT CONFORM THE SUBJECT POSITION
+	float grade_of_expertise;
+	float emotional_state;
+
+	// POSITION OF THE SUBJECT RELATED TO THE TOPIC
+	bool is_pro;
+
 	// functions
-	bool Evaluate_argument(argument, float);
-	void Update_opinion(argument, bool, float *);
+	bool Evaluate_argument(argument, float, float, float);
+	void Update_opinion(argument, bool, float *, float *);
 	float get_random();
 	bool Check_KB(int);
 
 public:
 	listener() {  
-		economic_opinion = 50.0f; ecologic_opinion = 50.0f; social_opinion = 50.0f; 
-		economic_value = 1.0f; ecologic_value = 1.0f; social_value = 1.0f; number_arg_accepted = 0; number_arg_rejected = 0;
+		grade_of_expertise = 0.0f; emotional_state = 50.0f; is_pro = true; number_arg_accepted = 0; number_arg_rejected = 0;
 	}
-	listener(float ECONOMIC_OP, float ECOLOGIC_OP, float SOCIAL_OP, 
-		float ECONOMIC_VAL = 1.0f, float ECOLOGIC_VAL = 1.0f, float SOCIAL_VAL = 1.0f) {
-		economic_opinion = ECONOMIC_OP; ecologic_opinion = ECOLOGIC_OP; social_opinion = SOCIAL_OP;
-		economic_value = ECONOMIC_VAL; ecologic_value = ECOLOGIC_VAL; social_value = SOCIAL_VAL;
+	listener(float expertise, float emotional = 50.0f, bool pro = true) {
+		grade_of_expertise = expertise; emotional_state = emotional; is_pro = pro;
 		number_arg_accepted = 0; number_arg_rejected = 0;
 	}
 	listener(int);
@@ -46,15 +43,9 @@ public:
 	// FUNCTION OF ACCEPTANCE OF NEW ARGUMENTS, RETURNS A BOOLEAN (TRUE = ACCEPTED, FALSE = REJECTED)
 	bool Add_argument(argument);
 	void Add_set_arguments(list<argument>);
-	float Get_economic_op() { return economic_opinion; }
-	float Get_ecologic_op() { return ecologic_opinion; }
-	float Get_social_op() { return social_opinion; }
-	float Get_economic_value() { return economic_value; }
-	float Get_ecologic_value() { return ecologic_value; }
-	float Get_social_value() { return social_value; }
-
-	float Get_verdict();
-	string Evaluate_verdict();
+	float Get_grade_of_expertise() { return grade_of_expertise; }
+	float Get_emotional_state() { return emotional_state; }
+	bool Get_is_pro() { return is_pro; }
 
 	int Get_arguments_accepted() { return number_arg_accepted; }
 	int Get_arguments_rejected() { return number_arg_rejected; }

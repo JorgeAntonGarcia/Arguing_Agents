@@ -7,17 +7,13 @@ listener::listener(int type) {
 	number_arg_accepted = 0; number_arg_rejected = 0;
 	switch (type) {
 	case 1:
-		economic_opinion = 50.0f; ecologic_opinion = 50.0f; social_opinion = 50.0f;
-		economic_value = 1.2f; ecologic_value = 0.6f; social_value = 0.9f; break;
+		grade_of_expertise = 70.0f; emotional_state = 50.0f; is_pro = true; number_arg_accepted = 0; number_arg_rejected = 0; break;
 	case 2:
-		economic_opinion = 50.0f; ecologic_opinion = 50.0f; social_opinion = 50.0f;
-		economic_value = 0.6f; ecologic_value = 1.2f; social_value = 0.9f; break;
+		grade_of_expertise = 30.0f; emotional_state = 50.0f; is_pro = true; number_arg_accepted = 0; number_arg_rejected = 0;; break;
 	case 3:
-		economic_opinion = 50.0f; ecologic_opinion = 50.0f; social_opinion = 50.0f;
-		economic_value = 1.0f; ecologic_value = 1.0f; social_value = 1.2f; break;
+		grade_of_expertise = 0.0f; emotional_state = 50.0f; is_pro = true; number_arg_accepted = 0; number_arg_rejected = 0; break;
 	default:
-		economic_opinion = 50.0f; ecologic_opinion = 50.0f; social_opinion = 50.0f;
-		economic_value = 1.0f; ecologic_value = 1.0f; social_value = 1.0f; break;
+		grade_of_expertise = 0.0f; emotional_state = 50.0f; is_pro = true; number_arg_accepted = 0; number_arg_rejected = 0; break;
 	}
 }
 
@@ -35,66 +31,67 @@ float listener::get_random() { // Returns a random float in given range
 
 bool listener::Add_argument(argument Arg) {
 	bool accepted = false;
-	float * acceptance_rate = NULL;
+	float * min_involvement = &grade_of_expertise;   // We set up the minimun value needed to accept an argument
+	float * emotion = &emotional_state;
+	float min_AR_ratio = emotional_state - 10.0f;	 // We set up the minimun value of AR ratio to accept an argument
+	float max_AR_ratio = emotional_state + 10.0f;	 // We set up the maximum value of AR ratio to accept an argument
+
 	// Check whether the listener has heard the argument before
 	if (Check_KB(Arg.Get_ID())) {
 		return accepted;
 	}
-	// Use nature to get the proper opinion score
-	switch (Arg.Get_nature()) {
-		case ECONOMIC:
-			acceptance_rate = &(this->economic_opinion);
-			break;
-		case ECOLOGIC:
-			acceptance_rate = &(this->ecologic_opinion);
-			break;
-		case SOCIAL:
-			acceptance_rate = &(this->social_opinion);
-			break;
-		default:
-			perror("Critical Error - Listener.cpp: Nature not in switch");
-			exit(1);
-			break;
+
+	accepted = this->Evaluate_argument(Arg, *min_involvement, min_AR_ratio, max_AR_ratio);
+
+
+	this->Update_opinion(Arg, accepted, min_involvement, emotion);
+	
+	return accepted;
+}
+
+bool listener::Evaluate_argument(argument Arg, float min_inv, float min_ar, float max_ar) {
+	bool accepted = false;
+	
+	if (Arg.Get_AR_ratio() > min_ar) {
+		if (Arg.Get_AR_ratio() < max_ar) {
+			if (Arg.Get_involvement() > min_inv) {
+				accepted = true;
+			}
+		}
 	}
 
-	//  If you give a Pro you don't need to apply any transformation, but giving a Con makes it neccesary to invert the acceptance rate
-	if  (Arg.Get_pro() == true)	{ accepted = this->Evaluate_argument(Arg, *acceptance_rate); }
-	else						{ accepted = this->Evaluate_argument(Arg, 100 - *acceptance_rate); }
-
-	this->Update_opinion(Arg, accepted, acceptance_rate);
-	
 	return accepted;
 }
 
-bool listener::Evaluate_argument(argument Arg, float acceptance_rate) {
-	bool accepted = false;
-	float adjusted_validity = (Arg.Get_validity() - 50) / 100;
-	float random = get_random();
-
-	acceptance_rate = (acceptance_rate * (1 + adjusted_validity) > 100) ? 100 : (acceptance_rate * (1+ adjusted_validity)); // acceptance_rate caps at 100%
-	
-	accepted = (acceptance_rate >= random) ? true : false;
-
-	return accepted;
-}
-
-void listener::Update_opinion(argument Arg, bool accepted, float * parameter) {
+void listener::Update_opinion(argument Arg, bool accepted, float * expertise, float * emotion) {
 	float GAUSS_MAXIMUM = 4.0f;
-	float GAUSS_SHAPE = 10.0f;
+	float GAUSS_SHAPE = 50.0f;
 
 		if (accepted == true) {
 			this->accepted_arguments.push_back(Arg);
 			this->number_arg_accepted++;
-			// Gaussian function to model the opinion change
-			float math = expf(-(powf((Arg.Get_strength() - 50.0f), 2.0) / (2 * powf(GAUSS_SHAPE, 2.0))));
-			if (Arg.Get_pro() == true) {
-				if ((*parameter += GAUSS_MAXIMUM * math) < 100.0) {}
-				else { *parameter = 100.0; }
-			} // PRO arguments.
+
+			// Gaussian function to model the grade of expertise of the subject depending on the strenght of the argument accepted
+			float math_expertise = expf(-(powf((100.0f - Arg.Get_involvement() + *expertise), 2.0) / (2 * powf(GAUSS_SHAPE, 2.0))));
+			if (Arg.Get_pro() == is_pro) {
+				if ((*expertise += GAUSS_MAXIMUM * math_expertise) < 100.0) {}
+				else { *expertise = 100.0; }
+			} // Arguments aligned with the subject position
 			else { 
-				if ((*parameter -= GAUSS_MAXIMUM * math) > 0.0) {}
-				else { *parameter = 0.0; }
-			; }	//CON arguments.
+				if ((*expertise -= GAUSS_MAXIMUM * math_expertise) > 0.0) {}
+				else { *expertise = 0.0; is_pro = !is_pro; }
+			}	// Arguments that face the subject knowdledge
+
+			// Gaussian function to model the emotional state of the subject depending on the strenght of the argument accepted
+			float math_emotion = expf(-(powf((100.0f - Arg.Get_AR_ratio() + *emotion), 2.0) / (2 * powf(GAUSS_SHAPE, 2.0))));
+			if (Arg.Get_AR_ratio() < emotional_state) {
+				if ((*emotion += GAUSS_MAXIMUM * math_emotion) < 100.0) {}
+				else { *emotion = 100.0; }
+			} // Arguments more emotional than the state of the subject
+			else {
+				if ((*emotion -= GAUSS_MAXIMUM * math_emotion) > 0.0) {}
+				else { *emotion = 0.0; }
+			}	// Arguments with more reason than the subject
 		}
 
 		else {
@@ -134,21 +131,6 @@ void listener::Add_set_arguments(list<argument> data_set) {
 	for (it = data_set.begin(); it != data_set.end(); it++) {
 		this->Add_argument(*it);
 	}
-}
-
-float listener::Get_verdict() {
-	float sum_of_values = Get_economic_value() + Get_ecologic_value() + Get_social_value();
-	float verdict = (Get_economic_op() * Get_economic_value() + Get_ecologic_op() * Get_ecologic_value() + Get_social_op() * Get_social_value()) / sum_of_values;
-	return verdict;
-}
-
-string listener::Evaluate_verdict() {
-	float verdict = Get_verdict();
-	std::string result;
-	if (verdict > 60.0f) { result = "PRO"; }
-	else if (verdict < 40.0f ) { result = "CON";}
-	else {	result = "NEUTRAL";}
-	return result;
 }
 
 #endif
