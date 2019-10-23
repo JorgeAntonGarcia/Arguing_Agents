@@ -31,9 +31,9 @@ private:
 
 public:
 	listener() {  
-		grade_of_expertise = 0.0f; emotional_state = 50.0f; is_pro = true; number_arg_accepted = 0; number_arg_rejected = 0;
+		grade_of_expertise = 0.0f; emotional_state = 1.0f; is_pro = true; number_arg_accepted = 0; number_arg_rejected = 0;
 	}
-	listener(float expertise, float emotional = 50.0f, bool pro = true) {
+	listener(float expertise, float emotional = 1.0f, bool pro = true) {
 		grade_of_expertise = expertise; emotional_state = emotional; is_pro = pro;
 		number_arg_accepted = 0; number_arg_rejected = 0;
 	}

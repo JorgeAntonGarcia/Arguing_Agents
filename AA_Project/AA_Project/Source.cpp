@@ -13,16 +13,26 @@ int main() {
 	float expertise_initial[NUM_LISTENERS], expertise_final[NUM_LISTENERS], emotion_initial[NUM_LISTENERS], emotion_final[NUM_LISTENERS];
 	int arg_acc_before[NUM_LISTENERS], arg_rej_before[NUM_LISTENERS];
 
-	argument *arg = new argument(1, true, 0.0, 55.0); argument_list.push_back(*arg);
-	arg->set_argument(2, true, 10.0, 55.0); argument_list.push_back(*arg);
-	arg->set_argument(3, true, 20.0, 55.0); argument_list.push_back(*arg);
-	arg->set_argument(4, true, 30.0, 55.0); argument_list.push_back(*arg);
-	arg->set_argument(5, true, 40.0, 55.0); argument_list.push_back(*arg);
-	arg->set_argument(6, true, 50.0, 55.0); argument_list.push_back(*arg);
-	arg->set_argument(7, true, 50.0, 55.0); argument_list.push_back(*arg);
-	arg->set_argument(8, true, 50.0, 55.0); argument_list.push_back(*arg);
-	arg->set_argument(9, true, 50.0, 55.0); argument_list.push_back(*arg);
-	arg->set_argument(10, true, 50.0, 55.0); argument_list.push_back(*arg);
+	try // Put your arguments in here.
+	{
+		argument *arg = new argument(1, true, 3.5, 3.5); argument_list.push_back(*arg);
+		arg->set_argument(2, true, 3.5, 3.5); argument_list.push_back(*arg);
+		arg->set_argument(3, true, 3.5, 3.5); argument_list.push_back(*arg);
+		arg->set_argument(4, true, 3.5, 3.5); argument_list.push_back(*arg);
+		arg->set_argument(5, true, 3.5, 3.5); argument_list.push_back(*arg);
+		arg->set_argument(6, true, 3.5, 3.5); argument_list.push_back(*arg);
+		arg->set_argument(7, true, 3.5, 3.5); argument_list.push_back(*arg);
+		arg->set_argument(8, true, 3.5, 3.5); argument_list.push_back(*arg);
+		arg->set_argument(9, true, 3.5, 3.5); argument_list.push_back(*arg);
+		arg->set_argument(10, true, 3.5, 3.5); argument_list.push_back(*arg);
+	}
+	catch (const std::exception &msg) // Catch if your affect and reason scores are out of bounds.
+	{
+		std::cerr << "Error: " << msg.what() << '\n';
+		std::getchar();
+		return EXIT_FAILURE;
+	}
+	
 
 	for (int i = 0; i < NUM_LISTENERS; i++) {
 		expertise_initial[i] = Listeners_list[i].Get_grade_of_expertise();

@@ -7,13 +7,13 @@ listener::listener(int type) {
 	number_arg_accepted = 0; number_arg_rejected = 0;
 	switch (type) {
 	case 1:
-		grade_of_expertise = 70.0f; emotional_state = 50.0f; is_pro = true; number_arg_accepted = 0; number_arg_rejected = 0;  break;
+		grade_of_expertise = 3.49; emotional_state = 1.0f; is_pro = true; number_arg_accepted = 0; number_arg_rejected = 0;  break;
 	case 2:
-		grade_of_expertise = 30.0f; emotional_state = 50.0f; is_pro = true; number_arg_accepted = 0; number_arg_rejected = 0;; break;
+		grade_of_expertise = (float)(0.3 * 7.0); emotional_state = 1.0f; is_pro = true; number_arg_accepted = 0; number_arg_rejected = 0;; break;
 	case 3:
-		grade_of_expertise = 0.0f; emotional_state = 50.0f; is_pro = true; number_arg_accepted = 0; number_arg_rejected = 0; break;
+		grade_of_expertise = 0.0f; emotional_state = 1.0f; is_pro = true; number_arg_accepted = 0; number_arg_rejected = 0; break;
 	default:
-		grade_of_expertise = 0.0f; emotional_state = 50.0f; is_pro = true; number_arg_accepted = 0; number_arg_rejected = 0; break;
+		grade_of_expertise = 0.0f; emotional_state = 1.0f; is_pro = true; number_arg_accepted = 0; number_arg_rejected = 0; break;
 	}
 }
 
@@ -24,17 +24,20 @@ listener::~listener() {
 float listener::get_random() { // Returns a random float in given range
 	static std::random_device e;
 	static std::uniform_real_distribution<> dis(0, 100); // range [0,100]
-	return dis(e);
+	return (float)dis(e);
 
 	// Source: https://stackoverflow.com/questions/686353/random-float-number-generation
 }
 
 bool listener::Add_argument(argument Arg) {
 	bool accepted = false;
-	float * min_involvement = &grade_of_expertise;   // We set up the minimun value needed to accept an argument
+	float * min_involvement = &grade_of_expertise;   // We set up the minimum value needed to accept an argument
 	float * emotion = &emotional_state;
-	float min_AR_ratio = emotional_state - 10.0f;	 // We set up the minimun value of AR ratio to accept an argument
-	float max_AR_ratio = emotional_state + 10.0f;	 // We set up the maximum value of AR ratio to accept an argument
+
+	float AR_range = Arg.Get_AR_RATIO_MAX() - Arg.Get_AR_RATIO_MIN();
+	float AR_boundary = AR_range / 10;					 // The AR ratio boundary to either side of the emotional state is 1/10th of the range
+	float min_AR_ratio = emotional_state - AR_boundary;	 // We set up the minimum value of AR ratio to accept an argument
+	float max_AR_ratio = emotional_state + AR_boundary;	 // We set up the maximum value of AR ratio to accept an argument
 
 	// Check whether the listener has heard the argument before
 	if (Check_KB(Arg.Get_ID())) {
@@ -42,8 +45,6 @@ bool listener::Add_argument(argument Arg) {
 	}
 
 	accepted = this->Evaluate_argument(Arg, *min_involvement, min_AR_ratio, max_AR_ratio);
-
-
 	this->Update_opinion(Arg, accepted, min_involvement, emotion);
 	
 	return accepted;
@@ -65,41 +66,43 @@ bool listener::Evaluate_argument(argument Arg, float min_inv, float min_ar, floa
 
 void listener::Update_opinion(argument Arg, bool accepted, float * expertise, float * emotion) {
 	float GAUSS_MAXIMUM = 4.0f;
-	float GAUSS_SHAPE = 50.0f;
+	float GAUSS_SHAPE_EXPERTISE = (Arg.Get_INVOLVEMENT_MAX() - Arg.Get_INVOLVEMENT_MIN()) / 2;
+	float GAUSS_SHAPE_EMOTION = (Arg.Get_AR_RATIO_MAX() - Arg.Get_AR_RATIO_MIN()) / 2;
 
 		if (accepted == true) {
 			this->accepted_arguments.push_back(Arg);
 			this->number_arg_accepted++;
 
 			// == EXPERTISE CHANGE ==
-			// Gaussian function to model the grade of expertise of the subject depending on the strenght of the argument accepted
-			float math_expertise = expf(-(powf((Arg.Get_INVOLVEMENT_MAX()) - Arg.Get_involvement() + *expertise), 2.0) / (2 * powf(GAUSS_SHAPE, 2.0))));
-			float learning_potential = (Arg.Get_INVOLVEMENT_MAX() - *expertise) / Arg.Get_INVOLVEMENT_MAX(); // Grade of expertise influences the amount of change in expertise.
-			if (Arg.Get_pro() == is_pro) {
+			// Gaussian function to model the grade of expertise of the subject depending on the strength of the argument accepted
+			float math_expertise = expf(-(powf((Arg.Get_INVOLVEMENT_MAX()) - Arg.Get_involvement() + *expertise, 2.0) / (2 * powf(GAUSS_SHAPE_EXPERTISE, 2.0))));
+			float learning_potential = (Arg.Get_involvement() - *expertise) / Arg.Get_involvement(); // Grade of expertise influences the amount of change in expertise.
+			
+			if (Arg.Get_pro() == is_pro) {	// Arguments aligned with the subject position
 				if ((*expertise += GAUSS_MAXIMUM * math_expertise * learning_potential ) < Arg.Get_INVOLVEMENT_MAX()) {}
 				else { *expertise = Arg.Get_INVOLVEMENT_MAX(); }
-			} // Arguments aligned with the subject position
-			else { 
+			} 
+			else {							// Arguments that face the subject knowledge
 				if ((*expertise -= GAUSS_MAXIMUM * math_expertise * learning_potential) > Arg.Get_INVOLVEMENT_MIN()) {}
 				else { *expertise = -(*expertise - GAUSS_MAXIMUM * math_expertise * learning_potential); is_pro = !is_pro; }
-			}	// Arguments that face the subject knowledge
+			}	
 
 			// == EMOTIONAL CHANGE ==
 			// Gaussian function to model the emotional state of the subject depending on the strength of the argument accepted
 			float math_emotion = 0.0f;
 
-			if (Arg.Get_AR_ratio() < emotional_state) {
-				math_emotion = expf(-(powf((emotional_state - Arg.Get_AR_ratio()), 2.0) / (2 * powf(GAUSS_SHAPE, 2.0))));
+			if (Arg.Get_AR_ratio() < emotional_state) {	// Arguments more emotional than the state of the subject
+				math_emotion = expf(-(powf((emotional_state - Arg.Get_AR_ratio()), 2.0) / (2 * powf(GAUSS_SHAPE_EMOTION, 2.0))));
 				math_emotion = 1 - math_emotion;
 				if ((*emotion -= GAUSS_MAXIMUM * math_emotion) > Arg.Get_AR_RATIO_MIN()) {}
 				else { *emotion = Arg.Get_AR_RATIO_MIN(); }
-			} // Arguments more emotional than the state of the subject
-			else {
-				math_emotion = expf(-(powf((Arg.Get_AR_ratio() - emotional_state), 2.0) / (2 * powf(GAUSS_SHAPE, 2.0))));
+			} 
+			else {										// Arguments with more reason than the state of the subject
+				math_emotion = expf(-(powf((Arg.Get_AR_ratio() - emotional_state), 2.0) / (2 * powf(GAUSS_SHAPE_EMOTION, 2.0))));
 				math_emotion = 1 - math_emotion;
 				if ((*emotion += GAUSS_MAXIMUM * math_emotion) < Arg.Get_AR_RATIO_MAX()) {}
 				else { *emotion = Arg.Get_AR_RATIO_MAX(); }
-			}	// Arguments with more reason than the subject
+			}
 		}
 
 		else {
