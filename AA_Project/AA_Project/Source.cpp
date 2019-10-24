@@ -15,7 +15,7 @@ int main() {
 
 	try // Put your arguments in here.
 	{
-		argument *arg = new argument(1, true, 3.5, 3.5); argument_list.push_back(*arg);
+		argument *arg = new argument(1, true, 0.0, 3.5); argument_list.push_back(*arg);
 		arg->set_argument(2, true, 3.5, 3.5); argument_list.push_back(*arg);
 		arg->set_argument(3, true, 3.5, 3.5); argument_list.push_back(*arg);
 		arg->set_argument(4, true, 3.5, 3.5); argument_list.push_back(*arg);
@@ -26,9 +26,9 @@ int main() {
 		arg->set_argument(9, true, 3.5, 3.5); argument_list.push_back(*arg);
 		arg->set_argument(10, true, 3.5, 3.5); argument_list.push_back(*arg);
 	}
-	catch (const std::exception &msg) // Catch if your affect and reason scores are out of bounds.
+	catch (const char* msg) // Catch if your affect and reason scores are out of bounds.
 	{
-		std::cerr << "Error: " << msg.what() << '\n';
+		std::cerr << "Error: " << msg << '\n';
 		std::getchar();
 		return EXIT_FAILURE;
 	}

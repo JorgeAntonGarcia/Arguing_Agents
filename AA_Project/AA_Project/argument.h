@@ -22,10 +22,10 @@ private:
 	void update_values() {
 		// Check whether values are in bounds.
 		if (!(Affect_score >= AFFECT_MIN && Affect_score <= AFFECT_MAX)) {
-			throw std::exception("Affect score out of bounds");
+			throw "Affect score out of bounds";
 		}
 		if (!(Reason_score >= REASON_MIN && Reason_score <= REASON_MAX)) {
-			throw std::exception("Reason score out of bounds");
+			throw "Reason score out of bounds";
 		}
 		// Update values
 		involvement = (Reason_score + Affect_score) / 2;
