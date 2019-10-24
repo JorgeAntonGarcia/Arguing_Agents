@@ -22,6 +22,7 @@ private:
 	void update_values() {
 		// Check whether values are in bounds.
 		if (!(Affect_score >= AFFECT_MIN && Affect_score <= AFFECT_MAX)) {
+
 			printf("Affect score out of bounds \n");
 			throw std::exception();
 		}
