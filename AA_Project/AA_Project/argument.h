@@ -1,7 +1,7 @@
 #ifndef ARGUMENT_H_
 #define ARGUMENT_H_
 
-#include<iostream>
+#include <iostream>
 #include <exception>
 #include <stdexcept>
 
@@ -22,10 +22,12 @@ private:
 	void update_values() {
 		// Check whether values are in bounds.
 		if (!(Affect_score >= AFFECT_MIN && Affect_score <= AFFECT_MAX)) {
-			throw std::exception("Affect score out of bounds");
+			printf("Affect score out of bounds \n");
+			throw std::exception();
 		}
 		if (!(Reason_score >= REASON_MIN && Reason_score <= REASON_MAX)) {
-			throw std::exception("Reason score out of bounds");
+			printf("Reason score out of bounds \n");
+			throw std::exception();
 		}
 		// Update values
 		involvement = (Reason_score + Affect_score) / 2;
