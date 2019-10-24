@@ -76,7 +76,9 @@ void listener::Update_opinion(argument Arg, bool accepted, float * expertise, fl
 			// == EXPERTISE CHANGE ==
 			// Gaussian function to model the grade of expertise of the subject depending on the strength of the argument accepted
 			float math_expertise = expf(-(powf((Arg.Get_INVOLVEMENT_MAX()) - Arg.Get_involvement() + *expertise, 2.0) / (2 * powf(GAUSS_SHAPE_EXPERTISE, 2.0))));
-			float learning_potential = (Arg.Get_involvement() - *expertise) / Arg.Get_involvement(); // Grade of expertise influences the amount of change in expertise.
+			// Grade of expertise influences the amount of change in expertise. 
+			// Limited by the involvement of the argument.
+			float learning_potential = (Arg.Get_involvement() - *expertise) / Arg.Get_involvement();
 			
 			if (Arg.Get_pro() == is_pro) {	// Arguments aligned with the subject position
 				if ((*expertise += GAUSS_MAXIMUM * math_expertise * learning_potential ) < Arg.Get_INVOLVEMENT_MAX()) {}
