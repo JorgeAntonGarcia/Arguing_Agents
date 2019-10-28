@@ -15,16 +15,16 @@ int main() {
 
 	try // Put your arguments in here.
 	{
-		argument *arg = new argument(1, true, 3.0, 7.0); argument_list.push_back(*arg);
-		arg->set_argument(2, true, 7.0, 7.0); argument_list.push_back(*arg);
-		arg->set_argument(3, true, 3.5, 3.5); argument_list.push_back(*arg);
-		arg->set_argument(4, true, 3.5, 3.5); argument_list.push_back(*arg);
-		arg->set_argument(5, true, 3.5, 3.5); argument_list.push_back(*arg);
-		arg->set_argument(6, true, 3.5, 3.5); argument_list.push_back(*arg);
-		arg->set_argument(7, true, 3.5, 3.5); argument_list.push_back(*arg);
-		arg->set_argument(8, true, 3.5, 3.5); argument_list.push_back(*arg);
-		arg->set_argument(9, true, 3.5, 3.5); argument_list.push_back(*arg);
-		arg->set_argument(10, true, 3.5, 3.5); argument_list.push_back(*arg);
+		argument *arg = new argument(1, false, 3.6, 3.6); argument_list.push_back(*arg);
+		arg->set_argument(2, false, 3.6, 3.6); argument_list.push_back(*arg);
+		arg->set_argument(3, true, 1.0, 1.0); argument_list.push_back(*arg);
+		arg->set_argument(4, true, 1.0, 1.0); argument_list.push_back(*arg);
+		arg->set_argument(5, true, 1.0, 1.0); argument_list.push_back(*arg);
+		arg->set_argument(6, true, 1.0, 1.0); argument_list.push_back(*arg);
+		arg->set_argument(7, true, 1.0, 1.0); argument_list.push_back(*arg);
+		arg->set_argument(8, true, 1.0, 1.0); argument_list.push_back(*arg);
+		arg->set_argument(9, true, 1.0, 1.0); argument_list.push_back(*arg);
+		arg->set_argument(10, true, 1.0, 1.0); argument_list.push_back(*arg);
 	}
 	catch (std::exception e) // Catch if your affect and reason scores are out of bounds.
 	{
@@ -51,8 +51,8 @@ int main() {
 		arg_acc_before[i] = Listeners_list[i].Get_arguments_accepted();
 		arg_rej_before[i] = Listeners_list[i].Get_arguments_rejected();
 		printf("Listener %d  :  ", i + 1);
-		printf("Final: grade of expertise : %.2f   emotional state : %.2f     Arguments accepted: %d  Arguments rejected: %d\n",
-			expertise_final[i], emotion_final[i], arg_acc_before[i], arg_rej_before[i]);
+		printf("Final: grade of expertise : %.2f   emotional state : %.2f  Position : %d     Arguments accepted: %d  Arguments rejected: %d\n",
+			expertise_final[i], emotion_final[i], Listeners_list[i].Get_is_pro(), arg_acc_before[i], arg_rej_before[i]);
 	}
 
 	printf("\n\n");

@@ -7,7 +7,7 @@ listener::listener(int type) {
 	number_arg_accepted = 0; number_arg_rejected = 0;
 	switch (type) {
 	case 1:
-		grade_of_expertise = 3.6; emotional_state = 1.0f; is_pro = true; number_arg_accepted = 0; number_arg_rejected = 0;  break;
+		grade_of_expertise = 3.59; emotional_state = 1.0f; is_pro = true; number_arg_accepted = 0; number_arg_rejected = 0;  break;
 	case 2:
 		grade_of_expertise = (float)(0.3 * 7.0); emotional_state = 1.0f; is_pro = true; number_arg_accepted = 0; number_arg_rejected = 0;; break;
 	case 3:
@@ -51,9 +51,9 @@ bool listener::Add_argument(argument Arg) {
 bool listener::Evaluate_argument(argument Arg, float min_inv, float min_ar, float max_ar) {
 	bool accepted = false;
 	
-	if (Arg.Get_AR_ratio() > min_ar) {
-		if (Arg.Get_AR_ratio() < max_ar) {
-			if (Arg.Get_involvement() > min_inv) {
+	if (Arg.Get_AR_ratio() >= min_ar) {
+		if (Arg.Get_AR_ratio() <= max_ar) {
+			if (Arg.Get_involvement() >= min_inv) {
 				accepted = true;
 			}
 		}
@@ -63,7 +63,8 @@ bool listener::Evaluate_argument(argument Arg, float min_inv, float min_ar, floa
 }
 
 void listener::Update_opinion(argument Arg, bool accepted, float * expertise, float * emotion) {
-	float GAUSS_MAXIMUM = 4.0f;
+	float GAUSS_MAXIMUM_EXPERTISE = INVOLVEMENT_RANGE / 10.0;
+	float GAUSS_MAXIMUM_EMOTION = AR_BOUNDARY;
 	float GAUSS_SHAPE_EXPERTISE = (INVOLVEMENT_MAX - INVOLVEMENT_MIN) / 2;
 	float GAUSS_SHAPE_EMOTION = (AR_RATIO_MAX - AR_RATIO_MIN) / 2;
 
@@ -73,18 +74,25 @@ void listener::Update_opinion(argument Arg, bool accepted, float * expertise, fl
 
 			// == EXPERTISE CHANGE ==
 			// Gaussian function to model the grade of expertise of the subject depending on the strength of the argument accepted
-			float math_expertise = expf(-(powf((INVOLVEMENT_MAX) - Arg.Get_involvement() + *expertise, 2.0) / (2 * powf(GAUSS_SHAPE_EXPERTISE, 2.0))));
+			float argument_potential = expf(-(powf(Arg.Get_involvement() - INVOLVEMENT_MAX, 2.0) / (2 * powf(GAUSS_SHAPE_EXPERTISE, 2.0))));
 			// Grade of expertise influences the amount of change in expertise. 
-			// Limited by the involvement of the argument.
-			float learning_potential = (Arg.Get_involvement() - *expertise) / Arg.Get_involvement();
+			// Limited by the maximum involvement.
+			float learning_potential = (INVOLVEMENT_MAX - *expertise) / INVOLVEMENT_MAX;
 			
 			if (Arg.Get_pro() == is_pro) {	// Arguments aligned with the subject position
-				if ((*expertise += GAUSS_MAXIMUM * math_expertise * learning_potential ) < INVOLVEMENT_MAX) {}
-				else { *expertise = INVOLVEMENT_MAX; }
+				if ((*expertise += GAUSS_MAXIMUM_EXPERTISE * learning_potential * argument_potential) < Arg.Get_involvement()) {}
+				else { *expertise = Arg.Get_involvement(); } // Expertise can never grow beyond the argument given.
 			} 
 			else {							// Arguments that face the subject knowledge
-				if ((*expertise -= GAUSS_MAXIMUM * math_expertise * learning_potential) > INVOLVEMENT_MIN) {}
-				else { *expertise = -(*expertise - GAUSS_MAXIMUM * math_expertise * learning_potential); is_pro = !is_pro; }
+				if ((*expertise -= GAUSS_MAXIMUM_EXPERTISE * learning_potential * argument_potential) > INVOLVEMENT_MIN) {}
+				else {
+					is_pro = !is_pro;
+					if ((*expertise = 2 * INVOLVEMENT_MIN - *expertise) > Arg.Get_involvement())
+					{
+						*expertise = Arg.Get_involvement(); 
+					}
+					
+				}
 			}	
 
 			// == EMOTIONAL CHANGE ==
@@ -94,13 +102,13 @@ void listener::Update_opinion(argument Arg, bool accepted, float * expertise, fl
 			if (Arg.Get_AR_ratio() < emotional_state) {	// Arguments more emotional than the state of the subject
 				math_emotion = expf(-(powf((emotional_state - Arg.Get_AR_ratio()), 2.0) / (2 * powf(GAUSS_SHAPE_EMOTION, 2.0))));
 				math_emotion = 1 - math_emotion;
-				if ((*emotion -= GAUSS_MAXIMUM * math_emotion) > AR_RATIO_MIN) {}
+				if ((*emotion -= GAUSS_MAXIMUM_EMOTION * math_emotion) > AR_RATIO_MIN) {}
 				else { *emotion = AR_RATIO_MIN; }
 			} 
 			else {										// Arguments with more reason than the state of the subject
 				math_emotion = expf(-(powf((Arg.Get_AR_ratio() - emotional_state), 2.0) / (2 * powf(GAUSS_SHAPE_EMOTION, 2.0))));
 				math_emotion = 1 - math_emotion;
-				if ((*emotion += GAUSS_MAXIMUM * math_emotion) < AR_RATIO_MAX) {}
+				if ((*emotion += GAUSS_MAXIMUM_EMOTION * math_emotion) < AR_RATIO_MAX) {}
 				else { *emotion = AR_RATIO_MAX; }
 			}
 		}
