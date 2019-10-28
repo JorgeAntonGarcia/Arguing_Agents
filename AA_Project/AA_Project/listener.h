@@ -46,7 +46,6 @@ public:
 	float Get_grade_of_expertise() { return grade_of_expertise; }
 	float Get_emotional_state() { return emotional_state; }
 	bool Get_is_pro() { return is_pro; }
-
 	int Get_arguments_accepted() { return number_arg_accepted; }
 	int Get_arguments_rejected() { return number_arg_rejected; }
 	

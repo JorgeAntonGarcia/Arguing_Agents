@@ -15,7 +15,7 @@ int main() {
 
 	try // Put your arguments in here.
 	{
-		argument *arg = new argument(1, true, 0.0, 7.0); argument_list.push_back(*arg);
+		argument *arg = new argument(1, true, 3.0, 7.0); argument_list.push_back(*arg);
 		arg->set_argument(2, true, 7.0, 7.0); argument_list.push_back(*arg);
 		arg->set_argument(3, true, 3.5, 3.5); argument_list.push_back(*arg);
 		arg->set_argument(4, true, 3.5, 3.5); argument_list.push_back(*arg);
