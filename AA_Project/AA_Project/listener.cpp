@@ -7,7 +7,7 @@ listener::listener(int type) {
 	number_arg_accepted = 0; number_arg_rejected = 0;
 	switch (type) {
 	case 1:
-		grade_of_expertise = 3.49; emotional_state = 1.0f; is_pro = true; number_arg_accepted = 0; number_arg_rejected = 0;  break;
+		grade_of_expertise = 3.6; emotional_state = 1.0f; is_pro = true; number_arg_accepted = 0; number_arg_rejected = 0;  break;
 	case 2:
 		grade_of_expertise = (float)(0.3 * 7.0); emotional_state = 1.0f; is_pro = true; number_arg_accepted = 0; number_arg_rejected = 0;; break;
 	case 3:
