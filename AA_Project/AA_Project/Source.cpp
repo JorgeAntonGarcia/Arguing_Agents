@@ -8,7 +8,9 @@
 
 int main() {
 
+	//Initialize your Listeners
 	listener Listeners_list[NUM_LISTENERS] = { (1), (2), (3)};
+
 	list<argument> argument_list;
 	float expertise_initial[NUM_LISTENERS], expertise_final[NUM_LISTENERS], emotion_initial[NUM_LISTENERS], emotion_final[NUM_LISTENERS];
 	int arg_acc_before[NUM_LISTENERS], arg_rej_before[NUM_LISTENERS];
